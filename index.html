@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-color: black;
+            margin: 0;
+            padding: 0;
+        }
+        #nameInput {
+            position: absolute;
+            color: white;
+        }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@v0.161.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module" src="scene.js"></script>
+    <script type="module" src="player.js"></script>
+    <script type="module" src="localPlayer.js"></script>
+    <script type="module" src="main.js"></script>
+</head>
+<body>
+    <div id="nameInput">
+        Naam: 
+        <input type="text" placeholder="naam" value="">
+        <button id="startGame">Start Game</button>
+        version 0.2
+    </div>
+</body>
+</html>
