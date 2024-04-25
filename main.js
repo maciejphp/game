@@ -39,8 +39,8 @@ animate();
 
 
 //multiplayer stuff
-const webSocket = new WebSocket('ws://localhost:5000/');
 // const webSocket = new WebSocket('wss://cheyenne-.glitch.me/');
+const webSocket = new WebSocket('ws://localhost:5000/');
 // const webSocket = new WebSocket('wss://bali237.glitch.me/');
 let playersData;
 let playerModels = [];
@@ -55,7 +55,7 @@ webSocket.onmessage = (message) => {
       if (type === "oldPlayers") {
         //create objects for all old players who are already in game
         playersData = data.content;
-        console.log(playersData);
+        console.log( "old players: ", playersData);
 
         for (const playerData of playersData) {
             const player = new otherPlayer(result, playerData.name);
@@ -78,6 +78,7 @@ webSocket.onmessage = (message) => {
       }else if (type === "id") {
 
         playerServerId = data.content;
+        console.log(`your playerid: ${playerServerId}`)
 
       }else if (type === "updatePlayerPosition") {
 
@@ -94,6 +95,12 @@ webSocket.onmessage = (message) => {
         const playerToUpdate = playerModels[data.id];
         playerToUpdate.rotate(data.rotation);
         // console.log(data.rotation)
+
+      }else if (type === "deletePlayer") {
+
+        console.log(data.id, playerModels);
+        playerModels[data.id].destroy();
+        playerModels.splice(data.id, 1);
 
       }
     } catch (error) {
@@ -133,4 +140,17 @@ function sendPlayerQuaternion(quaternion) {
   webSocket.send(JSON.stringify(messageData));
 }
 
-document.querySelector("#startGame").addEventListener("click", startGame);
+let playingGame = false;
+const button = document.querySelector("#startGame");
+button.addEventListener("click", ()=> {
+  if (!playingGame) {
+    playingGame = true;
+    startGame();
+  }
+});
+
+webSocket.addEventListener("open", () => {
+  console.log("We are connected");
+  button.disabled = false;
+  document.querySelector("#loading").style.display = "none";
+});

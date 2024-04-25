@@ -8,8 +8,9 @@ export class otherPlayer {
         this.renderer = sceneData.renderer;
         this.name = name;
         this.speed = 5;
-        this.mesh = null;
-        this.nameMesh = null;
+        this.mesh;
+        this.nameMesh;
+        this.animationId;
     }
 
     create() {
@@ -39,13 +40,9 @@ export class otherPlayer {
             const clock = new THREE.Clock();
 
             const animate = () => {
-                requestAnimationFrame( animate );
-            
-                if (this.nameMesh) {
-                    this.nameMesh.lookAt(this.camera.position)
-                    this.nameMesh.position.set(this.mesh.position.x, this.mesh.position.y + 1, this.mesh.position.z)
-                }
-            
+                this.animationId = requestAnimationFrame( animate );
+                this.nameMesh.lookAt(this.camera.position)
+                this.nameMesh.position.set(this.mesh.position.x, this.mesh.position.y + 1, this.mesh.position.z)
             }
             animate();
         })
@@ -58,5 +55,10 @@ export class otherPlayer {
         quaternion.y = data.y;
         quaternion.w = data.w;
         this.mesh.quaternion.copy(quaternion);
+    }
+    destroy() {
+        if (this.animationId) cancelAnimationFrame(this.animationId);
+        this.scene.remove(this.mesh);
+        this.scene.remove(this.nameMesh);
     }
 }

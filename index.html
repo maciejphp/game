@@ -6,13 +6,21 @@
     <title>Document</title>
     <style>
         body {
+            font-family: 'Courier New', Courier, monospace;
             background-color: black;
             margin: 0;
             padding: 0;
+            color: white;
         }
         #nameInput {
+            position: absolute; 
+        }
+        #loading {
             position: absolute;
-            color: white;
+            text-align: center;
+            width: 100%;
+            font-size: 70px;
+            text-shadow: 0 0 3px #000, 0 0 5px #000;
         }
     </style>
     <script type="importmap">
@@ -31,9 +39,11 @@
 <body>
     <div id="nameInput">
         Naam: 
-        <input type="text" placeholder="naam" value="">
-        <button id="startGame">Start Game</button>
-        version 0.2
+        <input type="text" placeholder="username" value="">
+        <button id="startGame" disabled>Join</button>
+        version 0.3
     </div>
+
+    <h1 id="loading">Waiting for the server...</h1>
 </body>
 </html>

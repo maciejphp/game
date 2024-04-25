@@ -54,6 +54,11 @@ sockserver.on('connection', ws => {
             ws.on('close', () => {
                 console.log('Client has disconnected!');
                 player.delete();
+                sockserver.clients.forEach(client => {
+                    if (client.playerData) {
+                        client.send(JSON.stringify({type: 'deletePlayer', id: ws.playerData.id}));
+                    }
+                })
             })
 
         }else if (type === "updatePlayerPosition") {
