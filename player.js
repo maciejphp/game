@@ -7,10 +7,6 @@ export class otherPlayer {
         this.camera = sceneData.camera;
         this.renderer = sceneData.renderer;
         this.name = name;
-        this.speed = 5;
-        this.mesh;
-        this.nameMesh;
-        this.animationId;
     }
 
     create() {

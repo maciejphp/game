@@ -7,6 +7,7 @@ const result = createScene();
 const scene = result.scene;
 const camera = result.camera;
 const renderer = result.renderer;
+const map = result.map;
 
 
 // const player2 = new otherPlayer(result, "hallo");
@@ -15,10 +16,9 @@ const renderer = result.renderer;
 
 let player;
 let oldPlayerPosition;
-let oldRotation;
 let oldQuaternion;
 
-//render every frame
+//represh every frame
 function animate() {
   requestAnimationFrame(animate);
 
@@ -40,8 +40,8 @@ animate();
 
 //multiplayer stuff
 // const webSocket = new WebSocket('wss://cheyenne-.glitch.me/');
-const webSocket = new WebSocket('ws://localhost:5000/');
-// const webSocket = new WebSocket('wss://bali237.glitch.me/');
+// const webSocket = new WebSocket('ws://localhost:5000/');
+const webSocket = new WebSocket('wss://bali237.glitch.me/');
 let playersData;
 let playerModels = [];
 let playerServerId;
@@ -116,8 +116,8 @@ function startGame() {
 
   player = new localPlayer(result, name);
   player.create();
+  player.move(map.playerPosition);
   oldPlayerPosition = player.mesh.position.clone();
-  oldRotation = player.mesh.rotation.y;
   oldQuaternion = player.mesh.quaternion.clone();
 
 
@@ -129,10 +129,6 @@ function startGame() {
 function sendPlayerPosition(position) {
   position = {x: position.x, y: position.y, z:position.z};
   const messageData = {type: "updatePlayerPosition", id: playerServerId, data: position};
-  webSocket.send(JSON.stringify(messageData));
-}
-function sendPlayerRotation(rotation) {
-  const messageData = {type: "updatePlayerRotation", id: playerServerId, data: rotation};
   webSocket.send(JSON.stringify(messageData));
 }
 function sendPlayerQuaternion(quaternion) {

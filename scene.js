@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 
+import { map } from './createmap.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
 export function createScene() {
@@ -14,44 +15,38 @@ export function createScene() {
 	document.body.appendChild(renderer.domElement);
 
     //map
-    function createMap() {
-		const textureLoader = new THREE.TextureLoader();
-		const texture = textureLoader.load('textures/vloer.png');
-		texture.repeat.set(35, 35);
+	//make a baseplate
+	const textureLoader = new THREE.TextureLoader();
+	const texture = textureLoader.load('textures/vloer.png');
+	texture.repeat.set(35, 35);
+	texture.wrapS = THREE.RepeatWrapping;
+	texture.wrapT = THREE.RepeatWrapping;
 
-		// const gui = new GUI();
-		// const params = {
-		// 	repeatX: 35, // Initial repeat count along X axis
-		// 	repeatY: 35  // Initial repeat count along Y axis
-		// };
-		// const textureFolder = gui.addFolder('Texture Settings');
-		// textureFolder.add(params, 'repeatX', 1, 100).name('Repeat X').onChange(updateTextureRepeat);
-		// textureFolder.add(params, 'repeatY', 1, 100).name('Repeat Y').onChange(updateTextureRepeat);
-		// function updateTextureRepeat() {
-		// 	texture.repeat.set(params.repeatX, params.repeatY);
-		// 	texture.needsUpdate = true; // Ensure the texture is updated
-		// }
+	const imagematerial = new THREE.MeshBasicMaterial(({map: texture}));
 
+	const geometry = new THREE.BoxGeometry(50,1,50);
+	const material = new THREE.MeshBasicMaterial({color: 0x555555});
+	const floor = new THREE.Mesh(geometry, imagematerial);
+	floor.position.y = -1;
+	scene.add(floor);
 
-		texture.wrapS = THREE.RepeatWrapping;
-		texture.wrapT = THREE.RepeatWrapping;
+	//make walls
+	const walls = [
+		"11111.....11111",
+		"1...1111111...1",
+		"1.............1",
+		"1...111P111...1",
+		"11111.111.11111"
+	]
 
-		const imagematerial = new THREE.MeshBasicMaterial(({map: texture}));
-
-        const geometry = new THREE.BoxGeometry(50,1,50);
-        const material = new THREE.MeshBasicMaterial({color: 0x555555});
-        const floor = new THREE.Mesh(geometry, imagematerial);
-        floor.position.y = -1;
-        scene.add(floor);
-    }
-    createMap();
+	const mapModel = new map(walls);
+	scene.add(mapModel.map);
 	
 	window.onresize = function () {
 		camera.aspect = window.innerWidth / window.innerHeight;
 		camera.updateProjectionMatrix();
 		renderer.setSize( window.innerWidth, window.innerHeight );
 	};
-	
 
-	return {scene: scene, camera: camera, renderer: renderer};
+	return {scene: scene, camera: camera, renderer: renderer, map: {walls: walls, playerPosition: mapModel.playerPosition}};
 }
