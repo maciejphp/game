@@ -13,7 +13,8 @@
             color: white;
         }
         #nameInput {
-            position: absolute; 
+            position: absolute;
+            display: flex; 
         }
         #loading {
             position: absolute;
@@ -22,12 +23,16 @@
             font-size: 70px;
             text-shadow: 0 0 3px #000, 0 0 5px #000;
         }
+        #startGame {
+            display: none;
+        }
     </style>
     <script type="importmap">
         {
             "imports": {
                 "three": "https://unpkg.com/three/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@v0.161.0/examples/jsm/"
+                "three/addons/": "https://unpkg.com/three@v0.161.0/examples/jsm/",
+                "oimo": "https://cdn.jsdelivr.net/npm/oimo@1.0.9/build/oimo.module.js"
             }
         }
     </script>
@@ -41,7 +46,7 @@
     <div id="nameInput">
         Naam: 
         <input type="text" placeholder="username" value="">
-        <button id="startGame" disabled>Join</button>
+        <button id="startGame">Join</button>
         version 0.4
     </div>
 

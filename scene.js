@@ -1,7 +1,6 @@
 import * as THREE from 'three';
-
+import * as OIMO from 'oimo';
 import { map } from './createmap.js';
-import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
 export function createScene() {
 	const scene = new THREE.Scene();
@@ -25,18 +24,18 @@ export function createScene() {
 	const imagematerial = new THREE.MeshBasicMaterial(({map: texture}));
 
 	const geometry = new THREE.BoxGeometry(50,1,50);
-	const material = new THREE.MeshBasicMaterial({color: 0x555555});
 	const floor = new THREE.Mesh(geometry, imagematerial);
 	floor.position.y = -1;
 	scene.add(floor);
 
 	//make walls
 	const walls = [
-		"11111.....11111",
-		"1...1111111...1",
-		"1.............1",
-		"1...111P111...1",
-		"11111.111.11111"
+		// "11111.....11111",
+		// "1...1111111...1",
+		// "1.............1",
+		// "1...111P111...1",
+		// "11111.111.11111"
+		"P"
 	]
 
 	const mapModel = new map(walls);
@@ -48,5 +47,8 @@ export function createScene() {
 		renderer.setSize( window.innerWidth, window.innerHeight );
 	};
 
-	return {scene: scene, camera: camera, renderer: renderer, map: {walls: walls, playerPosition: mapModel.playerPosition}};
+	//oimo world
+	const world = new OIMO.World({ timestep: 1/60, iterations: 8, broadphase: 2, worldscale: 1, random: true, info: false });
+	
+	return {scene: scene, camera: camera, renderer: renderer, map: {walls: walls, playerPosition: mapModel.playerPosition, oimoWorld: world}};
 }

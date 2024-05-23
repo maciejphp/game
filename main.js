@@ -122,6 +122,7 @@ function startGame() {
 
 
   const messageData = {type: "createNewPlayer", user: name};
+  console.log(webSocket)
   webSocket.send(JSON.stringify(messageData));
   playerName.value = "";
 }
@@ -147,6 +148,6 @@ button.addEventListener("click", ()=> {
 
 webSocket.addEventListener("open", () => {
   console.log("We are connected");
-  button.disabled = false;
+  button.style.display = "flex";
   document.querySelector("#loading").style.display = "none";
 });
