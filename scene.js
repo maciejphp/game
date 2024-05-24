@@ -1,6 +1,4 @@
 import * as THREE from 'three';
-import * as OIMO from 'oimo';
-import { map } from './createmap.js';
 
 export function createScene() {
 	const scene = new THREE.Scene();
@@ -22,24 +20,12 @@ export function createScene() {
 	texture.wrapT = THREE.RepeatWrapping;
 
 	const imagematerial = new THREE.MeshBasicMaterial(({map: texture}));
+	const imagematerial2 = new THREE.MeshBasicMaterial(({map: textureLoader.load('textures/fortnite.png')}));
 
 	const geometry = new THREE.BoxGeometry(50,1,50);
-	const floor = new THREE.Mesh(geometry, imagematerial);
+	const floor = new THREE.Mesh(geometry, imagematerial2);
 	floor.position.y = -1;
 	scene.add(floor);
-
-	//make walls
-	const walls = [
-		// "11111.....11111",
-		// "1...1111111...1",
-		// "1.............1",
-		// "1...111P111...1",
-		// "11111.111.11111"
-		"P"
-	]
-
-	const mapModel = new map(walls);
-	scene.add(mapModel.map);
 	
 	window.onresize = function () {
 		camera.aspect = window.innerWidth / window.innerHeight;
@@ -47,8 +33,5 @@ export function createScene() {
 		renderer.setSize( window.innerWidth, window.innerHeight );
 	};
 
-	//oimo world
-	const world = new OIMO.World({ timestep: 1/60, iterations: 8, broadphase: 2, worldscale: 1, random: true, info: false });
-	
-	return {scene: scene, camera: camera, renderer: renderer, map: {walls: walls, playerPosition: mapModel.playerPosition, oimoWorld: world}};
+	return {scene: scene, camera: camera, renderer: renderer};
 }

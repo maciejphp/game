@@ -1,50 +1,37 @@
 import * as THREE from 'three';
 import { createScene } from "./scene.js";
-import { localPlayer } from "./localPlayer.js";
-import { otherPlayer } from "./player.js";
+import { localPlayerModule } from "./localPlayer.js";
+import { playerModule } from "./player.js";
 
 const result = createScene();
 const scene = result.scene;
 const camera = result.camera;
 const renderer = result.renderer;
-const map = result.map;
 
-
-// const player2 = new otherPlayer(result, "hallo");
-// player2.create();
-// player2.move(new THREE.Vector3(2,0,2));
-
-let player;
-let oldPlayerPosition;
-let oldQuaternion;
+const webSocket = new WebSocket('ws://localhost:5000/');
+// const webSocket = new WebSocket('wss://bali237.glitch.me/');
+let playerModels = [];
+let playerServerId;
+let localPlayer;
+let player
 
 //represh every frame
 function animate() {
   requestAnimationFrame(animate);
 
-  if (player && (player.mesh.position.x != oldPlayerPosition.x || player.mesh.position.z != oldPlayerPosition.z)) {
-    oldPlayerPosition = player.mesh.position.clone();
-    sendPlayerPosition(oldPlayerPosition);
-  }
-
-  if (player && (player.mesh.quaternion.w != oldQuaternion.w || player.mesh.quaternion.y != oldQuaternion.y)) {
-    oldQuaternion = player.mesh.quaternion.clone();
-    sendPlayerQuaternion(oldQuaternion);
-  }
-
+  // if (localPlayer) {
+  //   playerModels.forEach(player => {
+  //     // console.log(player)
+  //     // player.nameMesh.lookAt(localPlayer.camera.position);
+  //     // player.nameMesh.position.set(player.mesh.position.x, player.mesh.position.y + 1, player.mesh.position.z); 
+  //   })
+  // }
+  
   renderer.render(scene, camera);
 }
 animate();
 
-
-
-//multiplayer stuff
-// const webSocket = new WebSocket('wss://cheyenne-.glitch.me/');
-// const webSocket = new WebSocket('ws://localhost:5000/');
-const webSocket = new WebSocket('wss://bali237.glitch.me/');
-let playersData;
-let playerModels = [];
-let playerServerId;
+let playersData = {};
 
 //recieve server messages
 webSocket.onmessage = (message) => {
@@ -55,13 +42,14 @@ webSocket.onmessage = (message) => {
       if (type === "oldPlayers") {
         //create objects for all old players who are already in game
         playersData = data.content;
-        console.log( "old players: ", playersData);
+        console.log(playersData)
+        // console.log( "old players: ", playersData);
 
         for (const playerData of playersData) {
-            const player = new otherPlayer(result, playerData.name);
+            const player = new playerModule(result, playerData.name);
             player.create();
             player.move(new THREE.Vector3(playerData.position.x,playerData.position.y,playerData.position.z));
-            player.rotate(playerData.rotation);
+            // player.rotate(playerData.rotation);
             playerModels[playerData.id] = player;
         }
 
@@ -70,37 +58,37 @@ webSocket.onmessage = (message) => {
         const playerData = data.content;
         playersData.push(playerData);
 
-        const player = new otherPlayer(result, playerData.name);
+        const player = new playerModule(result, playerData.name);
         playerModels[playerData.id] = player;
-        console.log("addedplayer", playerData.id, playerModels)
+        console.log("addedplayer", playerData.id)
         player.create();
 
       }else if (type === "id") {
 
         playerServerId = data.content;
+        playerModels[data.content] = localPlayer;
         console.log(`your playerid: ${playerServerId}`)
-
-      }else if (type === "updatePlayerPosition") {
-
-          const playerToUpdate = playerModels[data.id];
-          if (!playerToUpdate) {
-            console.warn(`player ${data.id} doesnt exist on client`, playerModels)
-            return;
-          }
-          const newPosition = new THREE.Vector3(data.position.x,data.position.y,data.position.z)
-          playerToUpdate.move(newPosition);
-
-      }else if (type === "updatePlayerRotation") {
-
-        const playerToUpdate = playerModels[data.id];
-        playerToUpdate.rotate(data.rotation);
-        // console.log(data.rotation)
 
       }else if (type === "deletePlayer") {
 
         console.log(data.id, playerModels);
         playerModels[data.id].destroy();
         playerModels.splice(data.id, 1);
+
+      }else if (type === "updatePosition") {
+
+        //update the position of all players including yourself
+        data.content.forEach(playerData => {
+          const playerToUpdate = playerModels[playerData.id];
+          // console.log(playerToUpdate)
+          if (!playerToUpdate) {
+            console.warn(`player ${data.id} doesnt exist on client`, playerModels)
+            return;
+          }
+
+          playerToUpdate.move(playerData.position);
+          playerToUpdate.rotate(playerData.quaternion);
+        })
 
       }
     } catch (error) {
@@ -114,29 +102,17 @@ function startGame() {
   let name = playerName.value;
   if (!name) name = "nameless";
 
-  player = new localPlayer(result, name);
-  player.create();
-  player.move(map.playerPosition);
-  oldPlayerPosition = player.mesh.position.clone();
-  oldQuaternion = player.mesh.quaternion.clone();
-
 
   const messageData = {type: "createNewPlayer", user: name};
-  console.log(webSocket)
   webSocket.send(JSON.stringify(messageData));
   playerName.value = "";
+
+  //create local player
+  localPlayer = new localPlayerModule(result, name, webSocket);
+  localPlayer.create();
 }
 
-function sendPlayerPosition(position) {
-  position = {x: position.x, y: position.y, z:position.z};
-  const messageData = {type: "updatePlayerPosition", id: playerServerId, data: position};
-  webSocket.send(JSON.stringify(messageData));
-}
-function sendPlayerQuaternion(quaternion) {
-  const messageData = {type: "updatePlayerRotation", id: playerServerId, data: {w: quaternion.w, y: quaternion.y}};
-  webSocket.send(JSON.stringify(messageData));
-}
-
+// button
 let playingGame = false;
 const button = document.querySelector("#startGame");
 button.addEventListener("click", ()=> {
