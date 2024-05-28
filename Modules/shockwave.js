@@ -6,7 +6,6 @@ let lastShockwave = 0;
 const shockwaveDelay = 1;
 const shockwaveRadius = 5;
 
-
 export function shockwave(player, webSocket) {
     const currentTime = Date.now();
     if (currentTime - lastShockwave > shockwaveDelay * 1000) {
@@ -21,11 +20,11 @@ export function shockwave(player, webSocket) {
         const sphere = new THREE.Mesh(geometry, material);
         player.mesh.add(sphere);
         
-        //send server message
-        const messageData = {type: "shockwave"};
-        webSocket.send(JSON.stringify(messageData));
-
-
+        //send server message if websocket given
+        if (webSocket) {
+            const messageData = {type: "shockwave"};
+            webSocket.send(JSON.stringify(messageData));
+        }
 
         //animate shockwave
         const currentSize = {x: 0, y: 0, z: 0 };

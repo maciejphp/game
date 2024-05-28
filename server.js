@@ -1,14 +1,12 @@
-// const express = require('express');
-// const webserver = express();
-
 import OIMO from 'oimo';
 import { WebSocketServer } from 'ws';
 
 const playerSpeed = 10;
 const shockwaveRadius = 5;
-const shockwavePower = 10;
+const shockwavePower = 15;
 
-// const { WebSocketServer } = require('ws');
+const playerFellDownTeleportDistance = -50;
+
 let players = [];
 
 class playerModule {
@@ -103,28 +101,36 @@ function update() {
         if (player.usingShockwave) {
             player.usingShockwave = false;
 
-            //find players affected by shockwave
             players.forEach(otherPlayer => {
                 if (player.id === otherPlayer.id) return;
 
+                //find players affected by shockwave
                 const distanceVec3 = new OIMO.Vec3(otherPlayer.position.x - position.x, otherPlayer.position.y -  position.y, otherPlayer.position.z - position.z);
                 const distance = maginitude(distanceVec3);
-                console.log(distance);
 
+                //apply effect
                 if (distance < shockwaveRadius) {
 
-                    const direction = distanceVec3.normalize();
+                    let direction = distanceVec3.normalize();
+                    distanceVec3.y += 10;
+                    direction.y = .4;
                     otherPlayer.box.applyImpulse(otherPlayer.position, direction.multiplyScalar(shockwavePower));
-                }
-                
+                }                
             })
         }
 
+        //teleport player up if he fell down
+        players.forEach(player => {
+            if (player.position.y < playerFellDownTeleportDistance) {
+                player.box.resetPosition(Math.random()-.5 * 20, 10, Math.random()-.5 * 20);
+            }            
+        })
+
     })
     
-    const playerPositionData = {type: "updatePosition", content: createClientPlayersPackage(players)};
+    const playerData = {type: "updatePosition", content: createClientPlayersPackage(players)};
     sockserver.clients.forEach(client => {
-        client.send(JSON.stringify(playerPositionData));
+        client.send(JSON.stringify(playerData));
     })
 
 
@@ -192,6 +198,12 @@ sockserver.on('connection', ws => {
 
             const playerData = ws.playerData;
             playerData.usingShockwave = true;
+
+            sockserver.clients.forEach(client => {
+                //dont send the data to the player who used the shockwave
+                if (client.playerData && client.playerData.id == ws.playerData.id) return;
+                client.send(JSON.stringify({type: 'usedShockwave', id: ws.playerData.id}));
+            })
 
         }else {
             console.warn('Unknown message type:', type);

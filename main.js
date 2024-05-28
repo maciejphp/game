@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { createScene } from "./Modules/scene.js";
 import { localPlayerModule } from "./Modules/localPlayer.js";
 import { playerModule } from "./Modules/player.js";
+import { shockwave } from "./Modules/shockwave.js";
 
 const result = createScene();
 const scene = result.scene;
@@ -18,15 +19,6 @@ let player
 //represh every frame
 function animate() {
   requestAnimationFrame(animate);
-
-  // if (localPlayer) {
-  //   playerModels.forEach(player => {
-  //     // console.log(player)
-  //     // player.nameMesh.lookAt(localPlayer.camera.position);
-  //     // player.nameMesh.position.set(player.mesh.position.x, player.mesh.position.y + 1, player.mesh.position.z); 
-  //   })
-  // }
-  
   renderer.render(scene, camera);
 }
 animate();
@@ -88,8 +80,13 @@ webSocket.onmessage = (message) => {
 
           playerToUpdate.move(playerData.position);
           playerToUpdate.rotate(playerData.quaternion);
+
         })
 
+      }else if (type === "usedShockwave") {
+
+        const player = playerModels[data.id];
+        shockwave(player);
       }
     } catch (error) {
         console.error('Error parsing message:', message, error);
