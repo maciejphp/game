@@ -4,6 +4,9 @@
 import OIMO from 'oimo';
 import { WebSocketServer } from 'ws';
 
+const playerSpeed = 10;
+const shockwaveRadius = 5;
+const shockwavePower = 10;
 
 // const { WebSocketServer } = require('ws');
 let players = [];
@@ -16,8 +19,9 @@ class playerModule {
         this.quaternion = null;
         this.xInput = 0;
         this.zInput = 0;
+        this.usingShockwave = false;
         this.direction = {x: 0, z: 1};
-        this.box = world.add({ type: 'box', size: [1, 1, 1], pos: [10,10,0], rot: [0, 0, 0], move: true, density: 1, friction: 1 });
+        this.box = world.add({ type: 'box', size: [1, 1, 1], pos: [0,10,0], rot: [0, 0, 0], move: true, density: 1, friction: 1 });
     }
     delete() {
         this.box.remove();
@@ -50,6 +54,9 @@ function createClientPlayersPackage(players) {
 function multiplyScalar(vec, scalar) {
     return new OIMO.Vec3(vec.x * scalar, vec.y * scalar, vec.z * scalar);
 }
+function maginitude(vec3) {
+    return Math.sqrt(vec3.x**2 + vec3.y**2 + vec3.z**2)
+}
 
 
 let serverFPS = 30;
@@ -81,20 +88,37 @@ function update() {
     players.forEach(player => {
         const box = player.box;
 
-        const speed = 10;
-
         //calculate the force
         let force = new OIMO.Vec3(player.zInput * player.direction.x + -player.xInput * -player.direction.z, 0, player.zInput * player.direction.z + -player.xInput * player.direction.x).normalize();
-        force = multiplyScalar(force, delta * speed);
-
-        // const force = new OIMO.Vec3(player.xInput * delta * speed, 0, player.zInput * delta * speed)
+        force = multiplyScalar(force, delta * playerSpeed);
+        // const force = new OIMO.Vec3(player.xInput * delta * playerSpeed, 0, player.zInput * delta * playerSpeed)
         
         const position = box.getPosition().clone();
         box.applyImpulse(position, force);
 
-        // console.log(box.getPosition())
         player.position = box.getPosition();
         player.quaternion = box.getQuaternion();
+
+        //shockwave
+        if (player.usingShockwave) {
+            player.usingShockwave = false;
+
+            //find players affected by shockwave
+            players.forEach(otherPlayer => {
+                if (player.id === otherPlayer.id) return;
+
+                const distanceVec3 = new OIMO.Vec3(otherPlayer.position.x - position.x, otherPlayer.position.y -  position.y, otherPlayer.position.z - position.z);
+                const distance = maginitude(distanceVec3);
+                console.log(distance);
+
+                if (distance < shockwaveRadius) {
+
+                    const direction = distanceVec3.normalize();
+                    otherPlayer.box.applyImpulse(otherPlayer.position, direction.multiplyScalar(shockwavePower));
+                }
+                
+            })
+        }
 
     })
     
@@ -163,6 +187,11 @@ sockserver.on('connection', ws => {
             playerData.zInput = Math.sign(playerInput.z);
             playerData.quaternion = quaternion;
             playerData.direction = direction;
+
+        }else if (type === "shockwave") {
+
+            const playerData = ws.playerData;
+            playerData.usingShockwave = true;
 
         }else {
             console.warn('Unknown message type:', type);

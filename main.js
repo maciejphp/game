@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { createScene } from "./scene.js";
-import { localPlayerModule } from "./localPlayer.js";
-import { playerModule } from "./player.js";
+import { createScene } from "./Modules/scene.js";
+import { localPlayerModule } from "./Modules/localPlayer.js";
+import { playerModule } from "./Modules/player.js";
 
 const result = createScene();
 const scene = result.scene;
