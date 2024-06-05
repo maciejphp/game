@@ -8,7 +8,7 @@ const shockwaveRadius = 5;
 
 export function shockwave(player, webSocket) {
     const currentTime = Date.now();
-    if (currentTime - lastShockwave > shockwaveDelay * 1000) {
+    if (!webSocket || currentTime - lastShockwave > shockwaveDelay * 1000) {
         lastShockwave = currentTime
 
         const material = new THREE.MeshBasicMaterial({
