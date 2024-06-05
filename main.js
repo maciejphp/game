@@ -87,6 +87,7 @@ webSocket.onmessage = (message) => {
 
         const player = playerModels[data.id];
         shockwave(player);
+        console.log(data.id, "shockwave");
       }
     } catch (error) {
         console.error('Error parsing message:', message, error);
