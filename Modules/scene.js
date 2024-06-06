@@ -14,16 +14,15 @@ export function createScene() {
     //map
 	//make a baseplate
 	const textureLoader = new THREE.TextureLoader();
-	const texture = textureLoader.load('textures/vloer.png');
+	const texture = textureLoader.load('textures/gridTilePng.png');
 	texture.repeat.set(35, 35);
 	texture.wrapS = THREE.RepeatWrapping;
 	texture.wrapT = THREE.RepeatWrapping;
 
 	const imagematerial = new THREE.MeshBasicMaterial(({map: texture}));
-	const imagematerial2 = new THREE.MeshBasicMaterial(({map: textureLoader.load('textures/fortnite.png')}));
 
 	const geometry = new THREE.BoxGeometry(50,1,50);
-	const floor = new THREE.Mesh(geometry, imagematerial2);
+	const floor = new THREE.Mesh(geometry, imagematerial);
 	floor.position.y = -1;
 	scene.add(floor);
 	
