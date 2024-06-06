@@ -5,8 +5,11 @@ const playerSpeed = 10;
 const shockwaveRadius = 5;
 const shockwavePower = 15;
 
-function getRandomNumber(min, max) {
-    let number = Math.random() * (max - min +1);
+function getRandomNumber(min, max, excludeMin, excludeMax) {
+    let number;
+    do{
+        number = Math.floor(Math.random() * (max - min +1)) + min;
+    } while (number >= excludeMin && number <= excludeMax)
     console.log(number);
     return number
 }
@@ -131,7 +134,7 @@ function update() {
             player.usingDash = false;
 
             const direction = new OIMO.Vec3(player.direction.x, 0, player.direction.z);
-            player.box.applyImpulse(player.position, direction.multiplyScalar(getRandomNumber(5, 40)));
+            player.box.applyImpulse(player.position, direction.multiplyScalar(getRandomNumber(-20, 40, -5, 5)));
         }
 
         //teleport player up if he fell down
