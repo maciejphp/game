@@ -4,7 +4,12 @@ import { WebSocketServer } from 'ws';
 const playerSpeed = 10;
 const shockwaveRadius = 5;
 const shockwavePower = 15;
-const dashPower = 15;
+
+function getRandomNumber(min, max) {
+    let number = Math.random() * (max - min +1);
+    console.log(number);
+    return number
+}
 
 const playerFellDownTeleportDistance = -50;
 
@@ -126,7 +131,7 @@ function update() {
             player.usingDash = false;
 
             const direction = new OIMO.Vec3(player.direction.x, 0, player.direction.z);
-            player.box.applyImpulse(player.position, direction.multiplyScalar(dashPower));
+            player.box.applyImpulse(player.position, direction.multiplyScalar(getRandomNumber(5, 40)));
         }
 
         //teleport player up if he fell down
