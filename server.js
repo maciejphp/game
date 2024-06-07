@@ -4,6 +4,7 @@ import { WebSocketServer } from 'ws';
 const playerSpeed = 10;
 const shockwaveRadius = 5;
 const shockwavePower = 15;
+const jumpPower = 3;
 
 function getRandomNumber(min, max, excludeMin, excludeMax) {
     let number;
@@ -28,6 +29,11 @@ class playerModule {
         this.zInput = 0;
         this.usingShockwave = false;
         this.usingDash = false;
+<<<<<<< Updated upstream
+=======
+        this.usingDash = false;
+        this.usingJump = false;
+>>>>>>> Stashed changes
         this.direction = {x: 0, z: 1};
         this.box = world.add({ type: 'sphere', size: [1, 1, 1], pos: [0,10,0], rot: [0, 0, 0], move: true, density: 1, friction: 1 });
     }
@@ -175,6 +181,25 @@ function update() {
             player.box.applyImpulse(player.position, direction.multiplyScalar(getRandomNumber(-20, 40, -5, 5)));
         }
 
+<<<<<<< Updated upstream
+=======
+        //dash
+        if(player.usingDash) {
+            player.usingDash = false;
+
+            const direction = new OIMO.Vec3(player.direction.x, 0, player.direction.z);
+            player.box.applyImpulse(player.position, direction.multiplyScalar(getRandomNumber(-20, 40, -5, 5)));
+        }
+
+        //jump
+        if(player.usingJump) {
+            player.usingJump = false;
+
+            const direction = new OIMO.Vec3(0, 2, 0);
+            player.box.applyImpulse(player.position, direction.multiplyScalar(jumpPower))
+        }
+
+>>>>>>> Stashed changes
         //teleport player up if he fell down
         players.forEach(player => {
             if (player.position.y < playerFellDownTeleportDistance) {
@@ -265,11 +290,25 @@ sockserver.on('connection', ws => {
             const playerData = ws.playerData;
             playerData.usingDash = true;
 
+<<<<<<< Updated upstream
+=======
             sockserver.clients.forEach(client => {
-                //dont send the data to the player who used the shockwave
+                //only apply on player that used dash
                 if (client.playerData && client.playerData.id == ws.playerData.id) return;
                 client.send(JSON.stringify({type: 'usedDash', id: ws.playerData.id}));
             })
+
+        }else if(type === "jump") {
+            const direction = JSON.parse(data).direction;
+            const playerData = ws.playerData;
+            playerData.usingJump = true;
+
+            sockserver.clients.forEach(client => {
+                //only apply on player that used jump
+                if (client.playerData && client.playerData.id == ws.playerData.id) return;
+                client.send(JSON.stringify({type: 'usedJump', id: ws.playerData.id}));
+            })
+>>>>>>> Stashed changes
         }else {
             console.warn('Unknown message type:', type);
         }
