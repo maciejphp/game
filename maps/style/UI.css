@@ -1,0 +1,26 @@
+body {
+  background-color: black;
+  margin: 0;
+  padding: 0;
+  color: white;
+  font-family: "puffin-arcade-regular", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+}
+
+#nameInput {
+  position: absolute;
+  display: flex;
+}
+
+#loading {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  font-size: 70px;
+  text-shadow: 0 0 3px #000, 0 0 5px #000;
+}
+
+#startGame {
+  display: none;
+}/*# sourceMappingURL=UI.css.map */
