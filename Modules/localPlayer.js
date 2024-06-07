@@ -2,11 +2,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { playerModule } from "./player.js";
 import { shockwave } from "./shockwave.js";
-<<<<<<< Updated upstream
-=======
 import { dash } from "./dash.js";
 import { jump } from "./jump.js";
->>>>>>> Stashed changes
 
 export class localPlayerModule
  {
