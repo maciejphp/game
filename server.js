@@ -29,7 +29,7 @@ class playerModule {
         this.usingShockwave = false;
         this.usingDash = false;
         this.direction = {x: 0, z: 1};
-        this.box = world.add({ type: 'box', size: [1, 1, 1], pos: [0,10,0], rot: [0, 0, 0], move: true, density: 1, friction: 1 });
+        this.box = world.add({ type: 'sphere', size: [1, 1, 1], pos: [0,10,0], rot: [0, 0, 0], move: true, density: 1, friction: 1 });
     }
     delete() {
         this.box.remove();
@@ -43,6 +43,39 @@ class playerModule {
             quaternion: this.quaternion
         }
         return newPlayer;
+    }
+}
+
+class Map {
+    constructor(world) {
+        this.world = world
+        this.defaultPlaneSettings = { type: 'box', size: [50, 1, 50], pos: [0, -1, 0], rot: [0, 0, 0], move: false, density: 1 };
+        this.plane = world.add(this.defaultPlaneSettings);
+    }
+    loadNormalPlane() {
+        this.world.gravity.y = -9.8;
+        const newSettings = {};
+        this.refreshMap(Object.assign(this.defaultPlaneSettings, newSettings)); //merge the 2 objects
+    }
+    loadBouncyCastle() {
+        this.world.gravity.y = -9.8;
+        const newSettings = {restitution: 3};
+        this.refreshMap(Object.assign(this.defaultPlaneSettings, newSettings)); //merge the 2 objects
+    }
+    loadIceyTrouble() {
+        this.world.gravity.y = -9.8;
+        const newSettings = {friction: 0};
+        this.refreshMap(Object.assign(this.defaultPlaneSettings, newSettings)); //merge the 2 objects
+    }
+    loadShadyMoon() {
+        this.world.gravity.y = -2;
+        const newSettings = {restitution: 3};
+        this.refreshMap(Object.assign(this.defaultPlaneSettings, newSettings)); //merge the 2 objects
+    }
+    
+    refreshMap(newPlaneSettings) {
+        this.plane.remove();
+        this.plane = world.add(newPlaneSettings);
     }
 }
 
@@ -80,7 +113,9 @@ const world = new OIMO.World({
     gravity: [0,-9.8,0] 
 });
 //ground
-world.add({ type: 'box', size: [50, 1, 50], pos: [0, -1, 0], rot: [0, 0, 0], move: false, density: 1 });
+const mapModule = new Map(world);
+mapModule.loadNormalPlane();
+
 
 let previousTime = Date.now()
 
@@ -102,7 +137,10 @@ function update() {
         // const force = new OIMO.Vec3(player.xInput * delta * playerSpeed, 0, player.zInput * delta * playerSpeed)
         
         const position = box.getPosition().clone();
+        position.y += 1;
         box.applyImpulse(position, force);
+        // box.angularVelocity.add(force);
+
 
         player.position = box.getPosition();
         player.quaternion = box.getQuaternion();
@@ -140,7 +178,7 @@ function update() {
         //teleport player up if he fell down
         players.forEach(player => {
             if (player.position.y < playerFellDownTeleportDistance) {
-                player.box.resetPosition(Math.random()-.5 * 20, 10, Math.random()-.5 * 20);
+                player.box.resetPosition((Math.random()-.5) * 20, 10, (Math.random()-.5) * 20);
             }            
         })
 
