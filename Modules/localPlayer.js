@@ -2,6 +2,11 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { playerModule } from "./player.js";
 import { shockwave } from "./shockwave.js";
+<<<<<<< Updated upstream
+=======
+import { dash } from "./dash.js";
+import { jump } from "./jump.js";
+>>>>>>> Stashed changes
 
 export class localPlayerModule
  {
@@ -58,8 +63,11 @@ export class localPlayerModule
             if (this.keysPressed['KeyS']) zMovement += -1;
 
             //shockwavwe
-            if (this.keysPressed['Space']) shockwave(this.player, this.webSocket);
-
+            if (this.keysPressed['KeyF']) shockwave(this.player, this.webSocket);
+            //dash
+            if (this.keysPressed['KeyE']) dash(this.player, this.webSocket);
+            //jump
+            if (this.keysPressed['Space']) jump(this.player, this.webSocket);
 
             //send keyboard input
             const messageData = {type: "handleUserInput", input: {x: xMovement, z: zMovement}, quaternion: this.mesh.quaternion, direction: camLookDirection};
