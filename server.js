@@ -4,7 +4,7 @@ import { WebSocketServer } from 'ws';
 const playerSpeed = 10;
 const shockwaveRadius = 5;
 const shockwavePower = 15;
-const jumpPower = 3;
+const jumpPower = 10;
 
 function getRandomNumber(min, max, excludeMin, excludeMax) {
     let number;
