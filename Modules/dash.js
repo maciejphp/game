@@ -1,36 +1,36 @@
 import * as TWEEN from 'https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.esm.min.js';
 import * as THREE from 'three';
 
-let lastShockwave = 0;
+let lastDash = 0;
 
-const shockwaveDelay = 1;
-const shockwaveRadius = 5;
+const dashDelay = 1;
+const dashLength = 0.5;
 
-export function shockwave(player, webSocket) {
+export function dash(player, webSocket) {
     const currentTime = Date.now();
-    if (!webSocket || currentTime - lastShockwave > shockwaveDelay * 1000) {
-        lastShockwave = currentTime
+    if (!webSocket || currentTime - lastDash > dashDelay * 1000) {
+        lastDash = currentTime;
 
         const material = new THREE.MeshBasicMaterial({
-            color: "blue",
+            color: "green",
             transparent: true,
             opacity: 1
         })
-        const geometry = new THREE.SphereGeometry(1);
-        const sphere = new THREE.Mesh(geometry, material);
-        player.mesh.add(sphere);
-        
+        const geometry = new THREE.CylinderGeometry(2.5, 2.5, 10, 16);
+        const Cylinder = new THREE.Mesh(geometry, material);
+        player.mesh.add(Cylinder);
+
         //send server message if websocket given
         if (webSocket) {
-            const messageData = {type: "shockwave"};
+            const messageData = {type: "dash"};
             webSocket.send(JSON.stringify(messageData));
         }
 
-        //animate shockwave
+        //animate dash
         const currentSize = {x: 0, y: 0, z: 0 };
-        const finalSize = {x: shockwaveRadius, y: shockwaveRadius, z: shockwaveRadius }
-
-        new TWEEN.Tween(sphere.material)
+        const finalSize = {x: 1, y: dashLength, z: 1 };
+        
+        new TWEEN.Tween(Cylinder.material)
         .to({ opacity: 0 }, 500)
         .easing(TWEEN.Easing.Quadratic.Out)
         .start();
@@ -39,20 +39,20 @@ export function shockwave(player, webSocket) {
         .to(finalSize, 500)
         .easing(TWEEN.Easing.Quadratic.Out)
         .onUpdate(() => {
-            // Update sphere scale
-            sphere.scale.set(currentSize.x, currentSize.y, currentSize.z);
+            //update cylinder scale
+            Cylinder.scale.set(currentSize.x, currentSize.y, currentSize.z);
         })
         .onComplete(() => {
-            //delete sphere
-            player.mesh.remove(sphere);
+            //delete cylinder
+            player.mesh.remove(Cylinder);
         })
         .start();
     }
 }
-
 
 function animate() {
     requestAnimationFrame(animate);
     TWEEN.update();
 }
 animate();
+

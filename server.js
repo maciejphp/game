@@ -5,6 +5,15 @@ const playerSpeed = 10;
 const shockwaveRadius = 5;
 const shockwavePower = 15;
 
+function getRandomNumber(min, max, excludeMin, excludeMax) {
+    let number;
+    do{
+        number = Math.floor(Math.random() * (max - min +1)) + min;
+    } while (number >= excludeMin && number <= excludeMax)
+    console.log(number);
+    return number
+}
+
 const playerFellDownTeleportDistance = -50;
 
 let players = [];
@@ -18,6 +27,7 @@ class playerModule {
         this.xInput = 0;
         this.zInput = 0;
         this.usingShockwave = false;
+        this.usingDash = false;
         this.direction = {x: 0, z: 1};
         this.box = world.add({ type: 'box', size: [1, 1, 1], pos: [0,10,0], rot: [0, 0, 0], move: true, density: 1, friction: 1 });
     }
@@ -119,6 +129,14 @@ function update() {
             })
         }
 
+        //dash
+        if(player.usingDash) {
+            player.usingDash = false;
+
+            const direction = new OIMO.Vec3(player.direction.x, 0, player.direction.z);
+            player.box.applyImpulse(player.position, direction.multiplyScalar(getRandomNumber(-20, 40, -5, 5)));
+        }
+
         //teleport player up if he fell down
         players.forEach(player => {
             if (player.position.y < playerFellDownTeleportDistance) {
@@ -204,7 +222,16 @@ sockserver.on('connection', ws => {
                 if (client.playerData && client.playerData.id == ws.playerData.id) return;
                 client.send(JSON.stringify({type: 'usedShockwave', id: ws.playerData.id}));
             })
+        }else if (type === "dash") {
+            const direction = JSON.parse(data).direction;
+            const playerData = ws.playerData;
+            playerData.usingDash = true;
 
+            sockserver.clients.forEach(client => {
+                //dont send the data to the player who used the shockwave
+                if (client.playerData && client.playerData.id == ws.playerData.id) return;
+                client.send(JSON.stringify({type: 'usedDash', id: ws.playerData.id}));
+            })
         }else {
             console.warn('Unknown message type:', type);
         }
