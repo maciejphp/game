@@ -19,7 +19,6 @@ export function createScene() {
 	texture.wrapS = THREE.RepeatWrapping;
 	texture.wrapT = THREE.RepeatWrapping;
 
-	const imagematerial = new THREE.MeshBasicMaterial(({map: texture}));
 	const imagematerial2 = new THREE.MeshBasicMaterial(({map: textureLoader.load('textures/fortnite.png')}));
 
 	const geometry = new THREE.BoxGeometry(50,1,50);
