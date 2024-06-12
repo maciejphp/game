@@ -18,7 +18,7 @@ export class playerModule {
         const textureMaterial = new THREE.MeshBasicMaterial({ map: textureLoader.load('../textures/ball.jpg') });
 
         // Create a sphere geometry
-        const geometry = new THREE.SphereGeometry(0.5, 42, 42);
+        const geometry = new THREE.SphereGeometry(0.5, 32, 32);
         const playerModel = new THREE.Mesh(geometry, textureMaterial);
         this.scene.add(playerModel);
         this.mesh = playerModel;

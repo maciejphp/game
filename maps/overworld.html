@@ -1,16 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Balli, the new hit game to play with your friends online!">
-    <link rel="stylesheet" href="https://use.typekit.net/bfr0jpk.css">
     <link rel="stylesheet" href="./style/UI.css">
-
     <title>Bali</title>
-
-
-    
     <script type="importmap">
         {
             "imports": {
@@ -26,14 +21,28 @@
     <script type="module" src="../Modules/shockwave.js"></script>
     <script type="module" src="../main.js"></script>
 </head>
-<body>
-    <div id="nameInput">
-        Naam: 
-        <input type="text" placeholder="username" value="">
-        <button id="startGame">Join</button>
-        version 0.7
-    </div>
 
-    <h1 id="loading">Loading...</h1>
+<body>
+<main id="main">
+    <div id="loading">
+        <h1>BALI</h1>
+        <h2>loading...</h2>
+    </div>
+    <div id="background"></div>
+    <div id="menu">
+        <div id="titleContainer">
+            <h1>BALI</h1>
+            <p>Version 0.8</p>
+        </div>
+        <div id="nameInput">
+            <p>Enter username:</p>
+            <input type="text" placeholder="username" value="" maxlength="38">
+            <button id="startGame">Join</button>
+        </div>
+    </div>
+   
+    </main>
+<script src="./join.js"></script>
 </body>
+
 </html>
