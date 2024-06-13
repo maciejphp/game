@@ -4,7 +4,7 @@ import { WebSocketServer } from 'ws';
 const playerSpeed = 10;
 const shockwaveRadius = 5;
 const shockwavePower = 15;
-const jumpPower = 10;
+const jumpPower = 15;
 
 function getRandomNumber(min, max, excludeMin, excludeMax) {
     let number;
@@ -57,7 +57,7 @@ class Map {
     }
     loadNormalPlane() {
         this.world.gravity.y = -9.8;
-        const newSettings = {};
+        const newSettings = {restitution: 1};
         this.refreshMap(Object.assign(this.defaultPlaneSettings, newSettings)); //merge the 2 objects
     }
     loadBouncyCastle() {
@@ -118,11 +118,15 @@ const world = new OIMO.World({
 //ground
 const mapModule = new Map(world);
 mapModule.loadNormalPlane();
+world.add({ type: 'box', size: [7, 14, 7], pos: [20, 6, 20], rot: [0, 0, 0], move: false, density: 1, restitution: 5 });
+world.add({ type: 'box', size: [7, 14, 7], pos: [-20, 6, -20], rot: [0, 0, 0], move: false, density: 1, restitution: 5 });
+world.add({ type: 'box', size: [7, 14, 7], pos: [-20, 6, 20], rot: [0, 0, 0], move: false, density: 1, restitution: 5 });
+world.add({ type: 'box', size: [7, 14, 7], pos: [20, 6, -20], rot: [0, 0, 0], move: false, density: 1, restitution: 5 });
 
 
 let previousTime = Date.now()
 
-const sockserver = new WebSocketServer({ port: 5000 });
+const sockserver = new WebSocketServer({ port: 5005 });
 
 function update() {
     const currentTime = Date.now();
