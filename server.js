@@ -118,7 +118,7 @@ world.add({ type: 'box', size: [7, 14, 7], pos: [20, 6, -20], rot: [0, 0, 0], mo
 
 let previousTime = Date.now()
 
-const sockserver = new WebSocketServer({ port: 5000 });
+const sockserver = new WebSocketServer({ port: 5005 });
 
 function update() {
     const currentTime = Date.now();
