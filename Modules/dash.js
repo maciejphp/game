@@ -25,23 +25,24 @@ export function dash(player, webSocket, camera) {
             webSocket.send(JSON.stringify(messageData));
         }
 
-        // tween fov camera
-        new TWEEN.Tween(camera)
-        .to({fov: 100}, 500)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .onUpdate(() => {
-            camera.updateProjectionMatrix();
-        })
-        .onComplete(() => {
+        if (camera) {
+            // tween fov camera
             new TWEEN.Tween(camera)
-            .to({fov: 75}, 1000)
-            .easing(TWEEN.Easing.Quadratic.In)
+            .to({fov: 100}, 500)
+            .easing(TWEEN.Easing.Quadratic.Out)
             .onUpdate(() => {
                 camera.updateProjectionMatrix();
-            }).start();
-        })
-        .start();
-        
+            })
+            .onComplete(() => {
+                new TWEEN.Tween(camera)
+                .to({fov: 75}, 1000)
+                .easing(TWEEN.Easing.Quadratic.In)
+                .onUpdate(() => {
+                    camera.updateProjectionMatrix();
+                }).start();
+            })
+            .start();
+        }
 
         //animate dash
         const currentSize = {x: 0, y: 0, z: 0 };
