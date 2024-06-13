@@ -11,15 +11,19 @@ export function createScene() {
 	const renderer = new THREE.WebGLRenderer();
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.setPixelRatio(1);
+	renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
 	document.body.appendChild(renderer.domElement);
 
 	//map
 	//make a baseplate
 	const textureLoader = new THREE.TextureLoader();
-	const texture = textureLoader.load('textures/grass.jpg');
-	texture.repeat.set(35, 35);
+	const texture = textureLoader.load('textures/grass2.png');
+	texture.repeat.set(16, 16);
 	texture.wrapS = THREE.RepeatWrapping;
 	texture.wrapT = THREE.RepeatWrapping;
+	texture.minFilter = THREE.NearestFilter;
+    texture.magFilter = THREE.NearestFilter;
+    texture.generateMipmaps = false;
 
 	const imagematerial = new THREE.MeshBasicMaterial(({ map: texture }));
 
@@ -30,10 +34,14 @@ export function createScene() {
 
 	//add towers
 	const textureTower1 = new THREE.TextureLoader();
-	const cubeTexture = textureTower1.load('../textures/castle.png', function (texture) {
+	const cubeTexture = textureTower1.load('textures/castle.png', function (texture) {
 		texture.wrapS = THREE.RepeatWrapping;
 		texture.wrapT = THREE.RepeatWrapping;
-		texture.repeat.set(4, 4); 
+		texture.repeat.set(2, 2); 
+
+		texture.minFilter = THREE.NearestFilter;
+		texture.magFilter = THREE.NearestFilter;
+		texture.generateMipmaps = false;
 	});
 
 	const cubeGeometry1 = new THREE.BoxGeometry(7, 14, 7);

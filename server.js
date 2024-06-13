@@ -3,9 +3,9 @@ import { WebSocketServer } from 'ws';
 
 const playerSpeed = 10;
 const shockwaveRadius = 5;
-const shockwavePower = 35;
+const shockwavePower = 60;
 const jumpPower = 15;
-const dashPower = 85;
+const dashPower = 55;
 
 const playerFellDownTeleportDistance = -50;
 
@@ -24,11 +24,11 @@ class playerModule {
         this.usingDash = false;
         this.usingJump = false;
         this.direction = {x: 0, z: 1};
-        this.box = world.add({ type: 'sphere', size: [1, 1, 1], pos: [0,10,0], rot: [0, 0, 0], move: true, density: 1, friction: 1 });
+        this.box = world.add({ type: 'sphere', size: [.5, .5, .5], pos: [0,10,0], rot: [0, 0, 0], move: true, density: 8, friction: 1 });
     }
     delete() {
         this.box.remove();
-        players.splice(this.id, 1);
+        players.splice(this.id, 1)
     }
     createClientPackage() {
         const newPlayer = {
