@@ -10,7 +10,8 @@ export function createScene() {
 
 	const renderer = new THREE.WebGLRenderer();
 	renderer.setSize(window.innerWidth, window.innerHeight);
-	renderer.setPixelRatio(.7);
+	renderer.setPixelRatio(1);
+	renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
 	document.body.appendChild(renderer.domElement);
 
 	//map
@@ -33,7 +34,7 @@ export function createScene() {
 
 	//add towers
 	const textureTower1 = new THREE.TextureLoader();
-	const cubeTexture = textureTower1.load('../textures/castle.png', function (texture) {
+	const cubeTexture = textureTower1.load('textures/castle.png', function (texture) {
 		texture.wrapS = THREE.RepeatWrapping;
 		texture.wrapT = THREE.RepeatWrapping;
 		texture.repeat.set(2, 2); 
