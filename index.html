@@ -3,30 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/UI.css">
     <title>Bali</title>
-    <style>
-        body {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: black;
-            margin: 0;
-            padding: 0;
-            color: white;
-        }
-        #nameInput {
-            position: absolute;
-            display: flex; 
-        }
-        #loading {
-            position: absolute;
-            text-align: center;
-            width: 100%;
-            font-size: 70px;
-            text-shadow: 0 0 3px #000, 0 0 5px #000;
-        }
-        #startGame {
-            display: none;
-        }
-    </style>
+ 
 
     
     <script type="importmap">
@@ -45,12 +24,25 @@
     <script type="module" src="main.js"></script>
 </head>
 <body>
-    <div id="nameInput">
-        Naam: 
-        <input type="text" placeholder="username" value="">
-        <button id="startGame">Join</button>
-        version 0.8
-    </div>
-    <h1 id="loading">Waiting for the server...</h1>
+    <main id="main">
+        <div id="loading">
+            <h1>BALI</h1>
+            <h2>loading...</h2>
+        </div>
+        <div id="background"></div>
+        <div id="menu">
+            <div id="titleContainer">
+                <h1>BALI</h1>
+                <p>Version 0.9</p>
+            </div>
+            <div id="nameInput">
+                <p>Enter username:</p>
+                <input type="text" maxlength="38">
+                <button id="startGame">Join</button>
+            </div>
+        </div>
+       
+        </main>
+        <script src="./scripts/join.js"></script>
 </body>
 </html>
