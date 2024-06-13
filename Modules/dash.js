@@ -6,7 +6,7 @@ let lastDash = 0;
 const dashDelay = 1;
 const dashLength = 0.5;
 
-export function dash(player, webSocket) {
+export function dash(player, webSocket, camera) {
     const currentTime = Date.now();
     if (!webSocket || currentTime - lastDash > dashDelay * 1000) {
         lastDash = currentTime;
@@ -25,6 +25,24 @@ export function dash(player, webSocket) {
             const messageData = {type: "dash"};
             webSocket.send(JSON.stringify(messageData));
         }
+
+        // tween fov camera
+        new TWEEN.Tween(camera)
+        .to({fov: 100}, 500)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+            camera.updateProjectionMatrix();
+        })
+        .onComplete(() => {
+            new TWEEN.Tween(camera)
+            .to({fov: 75}, 1000)
+            .easing(TWEEN.Easing.Quadratic.In)
+            .onUpdate(() => {
+                camera.updateProjectionMatrix();
+            }).start();
+        })
+        .start();
+        
 
         //animate dash
         const currentSize = {x: 0, y: 0, z: 0 };

@@ -10,7 +10,7 @@ export function createScene() {
 
 	const renderer = new THREE.WebGLRenderer();
 	renderer.setSize(window.innerWidth, window.innerHeight);
-	renderer.setPixelRatio(1);
+	renderer.setPixelRatio(.6);
 	renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
 	document.body.appendChild(renderer.domElement);
 
@@ -44,30 +44,24 @@ export function createScene() {
 		texture.generateMipmaps = false;
 	});
 
-	const cubeGeometry1 = new THREE.BoxGeometry(7, 14, 7);
-	const cubeMaterial1 = new THREE.MeshBasicMaterial({ map: cubeTexture });
-	const cube1 = new THREE.Mesh(cubeGeometry1, cubeMaterial1);
-	cube1.position.set(20, 6, 20);
-	scene.add(cube1);
-
-	const cubeGeometry2 = new THREE.BoxGeometry(7, 14, 7);
-	const cubeMaterial2 = new THREE.MeshBasicMaterial({ map: cubeTexture });
-	const cube2 = new THREE.Mesh(cubeGeometry2, cubeMaterial2);
-	cube2.position.set(-20, 6, -20); // Position it so its base is on the floor
-	scene.add(cube2);
-
-	const cubeGeometry3 = new THREE.BoxGeometry(7, 14, 7);
-	const cubeMaterial3 = new THREE.MeshBasicMaterial({ map: cubeTexture });
-	const cube3 = new THREE.Mesh(cubeGeometry3, cubeMaterial3);
-	cube3.position.set(-20, 6, 20); // Position it so its base is on the floor
-	scene.add(cube3);
-
-	const cubeGeometry4 = new THREE.BoxGeometry(7, 14, 7);
-	const cubeMaterial4 = new THREE.MeshBasicMaterial({ map: cubeTexture });
-	const cube4 = new THREE.Mesh(cubeGeometry4, cubeMaterial4);
-	cube4.position.set(20, 6, -20); // Position it so its base is on the floor
-	scene.add(cube4);
-
+	function makeTower(x,y,z) {
+		const cubeGeometry1 = new THREE.BoxGeometry(7, 14, 7);
+		const cubeMaterial1 = new THREE.MeshBasicMaterial({ map: cubeTexture });
+		const cube1 = new THREE.Mesh(cubeGeometry1, cubeMaterial1);
+		cube1.position.set(x, y, z);
+		scene.add(cube1);
+	
+		const cubeGeometry11 = new THREE.ConeGeometry(5,4,4,4);
+		const cubeMaterial11 = new THREE.MeshBasicMaterial({ color: "red",  map: cubeTexture  });
+		const cube11 = new THREE.Mesh(cubeGeometry11, cubeMaterial11);
+		cube11.position.set(x, y + 9, z);
+		cube11.rotation.y = 0.785398163
+		scene.add(cube11);
+	}
+	makeTower(20, 6, 20);
+	makeTower(20, 6, -20);
+	makeTower(-20, 6, 20);
+	makeTower(-20, 6, -20);
 
 	window.onresize = function () {
 		camera.aspect = window.innerWidth / window.innerHeight;

@@ -41,15 +41,16 @@ export class localPlayerModule
         this.mesh = this.player.mesh;
         this.nameMesh = this.player.nameMesh;
 
+        this.camera.position.y = 5;
+        this.camera.position.x = 10;
+
         const animate = () => {
             requestAnimationFrame(animate);
 
             //make player look at camera direction
             let camLookDirection = this.camera.getWorldDirection(new THREE.Vector3());
             camLookDirection = new THREE.Vector3(camLookDirection.x, 0, camLookDirection.z).normalize();
-            camLookDirection = {x: camLookDirection.x, z: camLookDirection.z}
-            // this.mesh.lookAt(camLookDirection.clone().add(this.mesh.position));
-            // console.log(camLookDirection)
+            camLookDirection = {x: camLookDirection.x, z: camLookDirection.z};
 
             //get keyboard input
             let zMovement = 0;
@@ -62,13 +63,14 @@ export class localPlayerModule
             //shockwavwe
             if (this.keysPressed['KeyF']) shockwave(this.player, this.webSocket);
             //dash
-            if (this.keysPressed['KeyE']) dash(this.player, this.webSocket);
+            if (this.keysPressed['KeyE']) dash(this.player, this.webSocket, this.camera);
             //jump
             if (this.keysPressed['Space']) jump(this.player, this.webSocket);
 
             //send keyboard input
             const messageData = {type: "handleUserInput", input: {x: xMovement, z: zMovement}, quaternion: this.mesh.quaternion, direction: camLookDirection};
             this.webSocket.send(JSON.stringify(messageData));
+
         }
         animate();
     }
