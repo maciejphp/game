@@ -3,9 +3,9 @@ import { WebSocketServer } from 'ws';
 
 const playerSpeed = 10;
 const shockwaveRadius = 5;
-const shockwavePower = 15;
+const shockwavePower = 35;
 const jumpPower = 15;
-const dashPower = 25;
+const dashPower = 85;
 
 const playerFellDownTeleportDistance = -50;
 
@@ -118,7 +118,7 @@ world.add({ type: 'box', size: [7, 14, 7], pos: [20, 6, -20], rot: [0, 0, 0], mo
 
 let previousTime = Date.now()
 
-const sockserver = new WebSocketServer({ port: 5000 });
+const sockserver = new WebSocketServer({ port: 5005 });
 
 function update() {
     const currentTime = Date.now();

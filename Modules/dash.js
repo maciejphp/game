@@ -10,15 +10,14 @@ export function dash(player, webSocket) {
     const currentTime = Date.now();
     if (!webSocket || currentTime - lastDash > dashDelay * 1000) {
         lastDash = currentTime;
-
         const material = new THREE.MeshBasicMaterial({
-            color: "green",
+            color: "#e48d6c",
             transparent: true,
-            opacity: 1
+            opacity: 0.75
         })
-        const geometry = new THREE.CylinderGeometry(2.5, 2.5, 10, 16);
-        const Cylinder = new THREE.Mesh(geometry, material);
-        player.mesh.add(Cylinder);
+        const geometry = new THREE.SphereGeometry(7.5, 16, 8);
+        const ball = new THREE.Mesh(geometry, material);
+        player.mesh.add(ball);
 
         //send server message if websocket given
         if (webSocket) {
@@ -28,9 +27,9 @@ export function dash(player, webSocket) {
 
         //animate dash
         const currentSize = {x: 0, y: 0, z: 0 };
-        const finalSize = {x: 1, y: dashLength, z: 1 };
+        const finalSize = {x: dashLength, y: dashLength, z: dashLength};
         
-        new TWEEN.Tween(Cylinder.material)
+        new TWEEN.Tween(ball.material)
         .to({ opacity: 0 }, 500)
         .easing(TWEEN.Easing.Quadratic.Out)
         .start();
@@ -39,12 +38,12 @@ export function dash(player, webSocket) {
         .to(finalSize, 500)
         .easing(TWEEN.Easing.Quadratic.Out)
         .onUpdate(() => {
-            //update cylinder scale
-            Cylinder.scale.set(currentSize.x, currentSize.y, currentSize.z);
+            //update ball scale
+            ball.scale.set(currentSize.x, currentSize.y, currentSize.z);
         })
         .onComplete(() => {
-            //delete cylinder
-            player.mesh.remove(Cylinder);
+            //delete ball
+            player.mesh.remove(ball);
         })
         .start();
     }

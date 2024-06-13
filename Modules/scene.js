@@ -23,7 +23,7 @@ export function createScene() {
 
 	const imagematerial = new THREE.MeshBasicMaterial(({ map: texture }));
 
-	const geometry = new THREE.BoxGeometry(50, 2, 50);
+	const geometry = new THREE.BoxGeometry(50, 1, 50);
 	const floor = new THREE.Mesh(geometry, imagematerial);
 	floor.position.y = -1;
 	scene.add(floor);
