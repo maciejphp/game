@@ -3,14 +3,16 @@ import { createScene } from "./Modules/scene.js";
 import { localPlayerModule } from "./Modules/localPlayer.js";
 import { playerModule } from "./Modules/player.js";
 import { shockwave } from "./Modules/shockwave.js";
+import { dash } from "./Modules/dash.js";
+import { jump } from "./Modules/jump.js";
 
 const result = createScene();
 const scene = result.scene;
 const camera = result.camera;
 const renderer = result.renderer;
 
- const webSocket = new WebSocket('ws://localhost:5005/');
-//const webSocket = new WebSocket('wss://bali237.glitch.me/');
+//  const webSocket = new WebSocket('ws://localhost:5005/');
+const webSocket = new WebSocket('wss://bali237.glitch.me/');
 let playerModels = [];
 let playerServerId;
 let localPlayer;
@@ -88,6 +90,14 @@ webSocket.onmessage = (message) => {
         const player = playerModels[data.id];
         shockwave(player);
         console.log(data.id, "shockwave");
+      }else if (type === "usedDash") {
+        const player = playerModels[data.id];
+        dash(player);
+        console.log(data.id, "dash");
+      }else if (type === "usedJump") {
+        const player = playerModels[data.id];
+        jump(player);
+        console.log(data.id, "jump")
       }
     } catch (error) {
         console.error('Error parsing message:', message, error);
