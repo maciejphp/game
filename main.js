@@ -11,7 +11,7 @@ const scene = result.scene;
 const camera = result.camera;
 const renderer = result.renderer;
 
-//  const webSocket = new WebSocket('ws://localhost:5005/');
+//  const webSocket = new WebSocket('ws://localhost:5000/');
 const webSocket = new WebSocket('wss://bali237.glitch.me/');
 let playerModels = [];
 let playerServerId;
